@@ -308,24 +308,16 @@ class NDArray {
         // Here if there is any axis in repeatAxes then broadcast
         for (const axis of repeatAxes) {
             const strides = calcStrides(this.shape)
-            // console.log("shape:",this.shape)
-            // console.log("strides:", strides)
             const subShape = this.shape.slice(0, axis + 1)
             const subStrides = strides.slice(0, axis + 1)
-            // console.log("sub shape:",subShape)
-            // console.log("sub strides:", subStrides)
             const indices = subShape.map((x) => createIndices(x))
 
             tempResult = []
             for (const index of cartesianProduct(...indices)) {
-                console.log("index:", index)
                 const strideIdx = []
                 subStrides.forEach((value, i) => strideIdx.push(value * index[i]))
                 const startIdx = strideIdx.reduce((acc, cur) => acc + cur, 0)
                 const endIdx = startIdx + subStrides[subStrides.length - 1]
-                // console.log("start idx:", startIdx)
-                // console.log("end idx:", endIdx)
-                // console.log("s data:",result.slice(startIdx, endIdx))
                 for (let r = 0; r < targetShape[axis]; r++) {
                     tempResult.push(...result.slice(startIdx, endIdx))
                 }
