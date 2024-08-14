@@ -1,4 +1,4 @@
-console.log("Hello from Tensor.js")
+console.log("Hello from NDArray.js")
 class NDArray {
     /**
      * Takes argument as nd array
@@ -14,7 +14,7 @@ class NDArray {
 
     #initData(data, dtype) {
         if (!Array.isArray(data)) {
-            throw new Array("Tensor expects data arg as an array")
+            throw new Array("NDArray expects data arg as an array")
         }
         switch (dtype) {
             case "int32":
@@ -54,7 +54,7 @@ class NDArray {
 
     /**
      * @param {shape} shape should be 1d array
-     * @returns new reshaped tensor
+     * @returns new reshaped NDArray
      */
     reshape(shape) {
         if (!Array.isArray(shape)) {
@@ -63,13 +63,13 @@ class NDArray {
         if (shape.reduce((a, b) => a * b) !== this.data.length) {
             throw new Error("Shape is not compatible with array length");
         }
-        return new Tensor(makeMultiDimentional(shape, fromTypedArrayToArray(this.data)), this.dtype)
+        return new NDArray(makeMultiDimentional(shape, fromTypedArrayToArray(this.data)), this.dtype)
     }
 
     /**
      * @param {axes} axes should be 1d array of positive integer (0,1,3,...) 
      * don't give any args
-     * @returns new transposed tensor
+     * @returns new transposed NDArray
      */
     transpose(axes = undefined) {
         if (!Array.isArray(axes) && axes !== undefined) {
@@ -82,7 +82,7 @@ class NDArray {
             }
             axes = createIndices(this.shape.length).reverse()
             const obj = this.#_transpose(this.data, this.shape, axes)
-            return new Tensor(makeMultiDimentional(obj.transposedShape,
+            return new NDArray(makeMultiDimentional(obj.transposedShape,
                 obj.transposedArr), this.dtype)
         }
 
@@ -103,13 +103,13 @@ class NDArray {
         }
 
         const obj = this.#_transpose(this.data, this.shape, axes)
-        return new Tensor(makeMultiDimentional(obj.transposedShape,
+        return new NDArray(makeMultiDimentional(obj.transposedShape,
             obj.transposedArr), this.dtype)
     }
 
 
     /**
-     * To print tensor in readable manner
+     * To print NDArray in readable manner
      */
     print() {
         printArray(this.data, this.shape);
@@ -117,18 +117,18 @@ class NDArray {
 
 
     /**
-     * other should be tensor object or same dim type array or broadcastable
+     * other should be NDArray object or same dim type array or broadcastable
      * @param {other} other 
      * @returns array
      */
     add(other) {
-        const isValid = isArrayOrTensor(other)
+        const isValid = isArrayOrNDArray(other)
         if (!isValid) {
-            throw new Error("Other should be array or tensor obj.")
+            throw new Error("Other should be array or NDArray obj.")
         }
 
         if (Array.isArray(other)) {
-            other = new Tensor(other)
+            other = new NDArray(other)
         }
 
         let isTrue = false
@@ -143,28 +143,28 @@ class NDArray {
         }
         if (isTrue) {
             const res = this.data.map((x, i) => x + other.data[i])
-            return new Tensor(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
+            return new NDArray(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
         }
         const broadcasted = this.#broadcastTo(other)
         const res = broadcasted.self.map((x, i) => x + broadcasted.other[i])
         console.log(broadcasted)
-        return new Tensor(makeMultiDimentional(broadcasted.shape, res),
+        return new NDArray(makeMultiDimentional(broadcasted.shape, res),
             broadcasted.self.dtype)
     }
 
     /**
-      * other should be tensor object or same dim type array or broadcastable
+      * other should be NDArray object or same dim type array or broadcastable
       * @param {other} other 
       * @returns array
       */
     subtr(other) {
-        const isValid = isArrayOrTensor(other)
+        const isValid = isArrayOrNDArray(other)
         if (!isValid) {
-            throw new Error("Other should be array or tensor obj.")
+            throw new Error("Other should be array or NDArray obj.")
         }
 
         if (Array.isArray(other)) {
-            other = new Tensor(other)
+            other = new NDArray(other)
         }
 
         let isTrue = false
@@ -179,27 +179,27 @@ class NDArray {
         }
         if (isTrue) {
             const res = this.data.map((x, i) => x - other.data[i])
-            return new Tensor(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
+            return new NDArray(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
         }
         const broadcasted = this.#broadcastTo(other)
         const res = broadcasted.self.map((x, i) => x - broadcasted.other[i])
-        return new Tensor(makeMultiDimentional(broadcasted.shape, res),
+        return new NDArray(makeMultiDimentional(broadcasted.shape, res),
             broadcasted.self.dtype)
     }
 
     /**
-    * other should be tensor object or same dim type array or broadcastable
+    * other should be NDArray object or same dim type array or broadcastable
     * @param {other} other 
     * @returns array
     */
     eWiseMul(other) {
-        const isValid = isArrayOrTensor(other)
+        const isValid = isArrayOrNDArray(other)
         if (!isValid) {
-            throw new Error("Other should be array or tensor obj.")
+            throw new Error("Other should be array or NDArray obj.")
         }
 
         if (Array.isArray(other)) {
-            other = new Tensor(other)
+            other = new NDArray(other)
         }
 
         let isTrue = false
@@ -214,27 +214,27 @@ class NDArray {
         }
         if (isTrue) {
             const res = this.data.map((x, i) => x * other.data[i])
-            return new Tensor(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
+            return new NDArray(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
         }
         const broadcasted = this.#broadcastTo(other)
         let res = broadcasted.self.map((x, i) => x * broadcasted.other[i])
-        return new Tensor(makeMultiDimentional(broadcasted.shape, res),
+        return new NDArray(makeMultiDimentional(broadcasted.shape, res),
             broadcasted.self.dtype)
     }
 
     /**
-    * other should be tensor object or same dim type array or broadcastable
+    * other should be NDArray object or same dim type array or broadcastable
     * @param {other} other 
     * @returns array
     */
     divide(other) {
-        const isValid = isArrayOrTensor(other)
+        const isValid = isArrayOrNDArray(other)
         if (!isValid) {
-            throw new Error("Other should be array or tensor obj.")
+            throw new Error("Other should be array or NDArray obj.")
         }
 
         if (Array.isArray(other)) {
-            other = new Tensor(other)
+            other = new NDArray(other)
         }
 
         let isTrue = false
@@ -249,62 +249,117 @@ class NDArray {
         }
         if (isTrue) {
             const res = this.data.map((x, i) => x / other.data[i])
-            return new Tensor(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
+            return new NDArray(makeMultiDimentional(this.shape, fromTypedArrayToArray(res)), this.dtype)
         }
         const broadcasted = this.#broadcastTo(other)
         const res = broadcasted.self.map((x, i) => x / broadcasted.other[i])
-        return new Tensor(makeMultiDimentional(broadcasted.shape, res),
+        return new NDArray(makeMultiDimentional(broadcasted.shape, res),
             broadcasted.self.dtype)
     }
 
     /**
-     * Other should be object of tensor or array
+     * Broadcasts to its target shape
+     * @param {Array} targetShape 
+     * @returns NDArray
+     */
+    broadcastTo(targetShape) {
+        // If it's not valid shape then it throws an error
+        validateBroadcastTargetShape(this.shape, targetShape)
+
+        // Temprarily stores broadcasted data
+        let tempResult = []
+
+        // Case for when ndim of original array is less than target shape then
+        // it simply repeats array multiply by extra dims times means [2,3]->2*3 times
+        if (this.length < targetShape.length) {
+            const extraDims = targetShape.length - oriShape.length
+            const preTargetShape = targetShape.slice(0, extraDims)
+            this.shape.unshift(...preTargetShape)
+            this.ndim = this.shape.length
+            const repeat = preTargetShape.reduce((acc, cur) => acc * cur, 1)
+            for (let i = 0; i < repeat; i++) {
+                tempResult.push(...this.data)
+            }
+        }
+
+        // For all cases
+        let result = []
+        if (tempResult.length === 0) {
+            result = fromTypedArrayToArray(this.data)
+        } else {
+            result = tempResult
+        }
+
+        // To track which axis is to be repeat
+        const repeatAxes = []
+        this.shape.forEach((v, i) => {
+            if (targetShape[i] > v && v === 1) {
+                repeatAxes.push(i)
+            }
+        })
+
+        // Here If repeatAxes has no any axis then simply return result
+        if (repeatAxes.length === 0) {
+            const v = new NDArray(result, this.dtype)
+            v.shape = this.shape
+            return v
+        }
+
+        // Here if there is any axis in repeatAxes then broadcast
+        for (const axis of repeatAxes) {
+            const strides = calcStrides(this.shape)
+            // console.log("shape:",this.shape)
+            // console.log("strides:", strides)
+            const subShape = this.shape.slice(0, axis + 1)
+            const subStrides = strides.slice(0, axis + 1)
+            // console.log("sub shape:",subShape)
+            // console.log("sub strides:", subStrides)
+            const indices = subShape.map((x) => createIndices(x))
+
+            tempResult = []
+            for (const index of cartesianProduct(...indices)) {
+                console.log("index:", index)
+                const strideIdx = []
+                subStrides.forEach((value, i) => strideIdx.push(value * index[i]))
+                const startIdx = strideIdx.reduce((acc, cur) => acc + cur, 0)
+                const endIdx = startIdx + subStrides[subStrides.length - 1]
+                // console.log("start idx:", startIdx)
+                // console.log("end idx:", endIdx)
+                // console.log("s data:",result.slice(startIdx, endIdx))
+                for (let r = 0; r < targetShape[axis]; r++) {
+                    tempResult.push(...result.slice(startIdx, endIdx))
+                }
+            }
+            this.shape[axis] = targetShape[axis]
+            result = tempResult
+        }
+        const v = new NDArray(result, this.dtype)
+        v.shape = this.shape
+        return v
+    }
+
+    /**
+     * Other should be object of NDArray or array
      * @param {other} other
      * @returns object of arrays 
      */
     #broadcastTo(other) {
 
-        if (!Array.isArray(other) && !(other instanceof Tensor)) {
-            throw new Error("Other should be object of tensor or array")
+        if (!Array.isArray(other) && !(other instanceof NDArray)) {
+            throw new Error("Other should be object of NDArray or array")
         }
 
         if (Array.isArray(other)) {
-            other = new Tensor(other)
+            other = new NDArray(other)
         }
 
         const resultShape = broadcastShapes(this.shape, other.shape);
         return {
-            "self": this.#fillArray(resultShape, this.data),
-            "other": this.#fillArray(resultShape, other.data),
+            "self": this.broadcastTo(resultShape),
+            "other": other.broadcastTo(resultShape),
             "shape": resultShape
         }
     }
-
-    /**
-     * This methods takes 1d array, shape and returns modified array according to shape
-     * @param {shape} shape 
-     * @param {arr} arr 
-     * @returns result
-     */
-    #fillArray(shape, arr) {
-        const result = [];
-        let flatIndex = 0;
-
-        function recursiveFill(shape, index) {
-            if (shape.length === 0) {
-                result.push(arr[flatIndex % arr.length]);
-                flatIndex++;
-            } else {
-                for (let i = 0; i < shape[0]; i++) {
-                    recursiveFill(shape.slice(1), index * shape[0] + i);
-                }
-            }
-        }
-
-        recursiveFill(shape, 0);
-        return result;
-    }
-
     /**
      * 
      * @param {arr} arr should be 1d array of multi dimension array or 1d,2d ,3d etc.
@@ -335,11 +390,11 @@ class NDArray {
 
 
     /**
-     * @returns new tensor with tanh operation
+     * @returns new NDArray with tanh operation
      */
     tanh() {
         const arr = fromTypedArrayToArray(this.data)
-        const v = new Tensor(arr, this.dtype)
+        const v = new NDArray(arr, this.dtype)
         v.shape = this.shape
         v.data = v.data.map((x) => Math.tanh(x))
         return v
@@ -347,63 +402,63 @@ class NDArray {
 
 
     /**
-     * @returns new tensor with e^x operation
+     * @returns new NDArray with e^x operation
      */
     exp() {
         const arr = fromTypedArrayToArray(this.data)
-        const v = new Tensor(arr, this.dtype)
+        const v = new NDArray(arr, this.dtype)
         v.shape = this.shape
         v.data = v.data.map((x) => Math.exp(x))
         return v
     }
 
     /**
-     * add scalar to each elements of tensor
+     * add scalar to each elements of NDArray
      * @param {scalar} scalar 
-     * @returns tensor
+     * @returns NDArray
      */
     addScalar(scalar) {
         const arr = fromTypedArrayToArray(this.data)
-        const v = new Tensor(arr, this.dtype)
+        const v = new NDArray(arr, this.dtype)
         v.shape = this.shape
         v.data = v.data.map((x) => x + scalar)
         return v
     }
 
     /**
-    * subtract scalar from each elements of tensor
+    * subtract scalar from each elements of NDArray
     * @param {scalar} scalar 
-    * @returns tensor
+    * @returns NDArray
     */
     subtrScalar(scalar) {
         const arr = fromTypedArrayToArray(this.data)
-        const v = new Tensor(arr, this.dtype)
+        const v = new NDArray(arr, this.dtype)
         v.shape = this.shape
         v.data = v.data.map((x) => x - scalar)
         return v
     }
 
     /**
-    * multiply scalar to each elements of tensor
+    * multiply scalar to each elements of NDArray
     * @param {scalar} scalar 
-    * @returns tensor
+    * @returns NDArray
     */
     mulScalar(scalar) {
         const arr = fromTypedArrayToArray(this.data)
-        const v = new Tensor(arr, this.dtype)
+        const v = new NDArray(arr, this.dtype)
         v.shape = this.shape
         v.data = v.data.map((x) => x * scalar)
         return v
     }
 
     /**
-     * Divide by scalar to each elements of tensor
+     * Divide by scalar to each elements of NDArray
      * @param {scalar} scalar 
-     * @returns tensor
+     * @returns NDArray
      */
     divScalar(scalar) {
         const arr = fromTypedArrayToArray(this.data)
-        const v = new Tensor(arr, this.dtype)
+        const v = new NDArray(arr, this.dtype)
         v.shape = this.shape
         v.data = v.data.map((x) => x / scalar)
         return v
@@ -418,7 +473,7 @@ class NDArray {
 
         if (axis === undefined) {
             const res = this.data.reduce((acc, cur) => acc + cur, 0)
-            return new Tensor([res], this.dtype)
+            return new NDArray([res], this.dtype)
         }
 
         if (axis !== Number(axis)) {
@@ -461,26 +516,26 @@ class NDArray {
                 .reduce((acc, v) => acc + v, 0)
         }
 
-        return new Tensor(makeMultiDimentional(shapeNew, resultArr), this.dtype)
+        return new NDArray(makeMultiDimentional(shapeNew, resultArr), this.dtype)
     }
 
     /**
-     * @param {Tensor|Array} other 
-     * @returns Tensor of matrix multiplication
+     * @param {NDArray|Array} other 
+     * @returns NDArray of matrix multiplication
      */
     matmul(other) {
-        if (!Array.isArray(other) && !(other instanceof Tensor)) {
-            throw new Error("Other should be array or tensor")
+        if (!Array.isArray(other) && !(other instanceof NDArray)) {
+            throw new Error("Other should be array or NDArray")
         }
 
         if (Array.isArray(other)) {
-            other = new Tensor(other)
+            other = new NDArray(other)
         }
 
         if (this.shape[this.ndim - 1] === other.shape[other.ndim - 2]) {
             if (this.ndim === 2 && other.ndim === 2) {
                 const result = matrixMul(this.data, other.data, this.shape[0], this.shape[1], other.shape[1])
-                const v = new Tensor(result, this.dtype)
+                const v = new NDArray(result, this.dtype)
                 v.ndim = 2
                 v.shape = [this.shape[0], other.shape[1]]
                 return v
@@ -505,7 +560,7 @@ class NDArray {
                             this.shape[this.ndim - 2], this.shape[this.ndim - 1],
                             other.shape[other.ndim - 1]))
                     })
-                    const v = new Tensor(result.flat(), this.dtype)
+                    const v = new NDArray(result.flat(), this.dtype)
                     v.ndim = this.ndim
                     v.shape = this.shape.slice(0, this.ndim - 2)
                     v.shape.push(this.shape[this.ndim - 2], other.shape[other.ndim - 1])
@@ -515,8 +570,14 @@ class NDArray {
 
             const s1 = this.shape.slice(0, (this.ndim - 2))
             const s2 = other.shape.slice(0, (other.ndim - 2))
+            if (s1.length === 0) {
+                s1.push(1)
+            }
+            if (s2.length === 0) {
+                s2.push(1)
+            }
             const broadcastedShape = broadcastShapes(s1, s2)
-            // console.log(broadcastedShape[1])
+
             const shapeT1 = []
             shapeT1.push(...broadcastedShape)
             shapeT1.push(this.shape[this.ndim - 2], this.shape[this.ndim - 1])
@@ -533,7 +594,7 @@ class NDArray {
                     shapeT1[this.ndim - 2], shapeT1[this.ndim - 1],
                     shapeT2[other.ndim - 1]))
             })
-            const v = new Tensor(result.flat(), this.dtype)
+            const v = new NDArray(result.flat(), this.dtype)
             v.ndim = shapeT1.length
             v.shape = shapeT1.slice(0, v.ndim - 2)
             v.shape.push(shapeT1[v.ndim - 2], shapeT2[v.ndim - 1])
@@ -543,29 +604,4 @@ class NDArray {
             throw new Error("Shape is not compatible for matmul")
         }
     }
-
-    broadcastTo(targetShape) {
-        const inputShape = this.shape;
-        const inputData = this.data;
-        const outputData = new Array(targetShape.reduce((a, b) => a * b, 1));
-        const outputStrides = calcStrides(targetShape);
-
-        let inputIndex = 0;
-        for (let i = 0; i < outputData.length; i++) {
-            const coords = getCoordsFromIndex(i, targetShape, outputStrides);
-            console.log(`Coords: ${coords}`);
-            const broadcastedCoords = coords.slice(-inputShape.length);
-            console.log(`Broadcasted Coords: ${broadcastedCoords}`);
-            inputIndex = calculateInputIndex(broadcastedCoords, inputShape, calcStrides(inputShape));
-            console.log(`Input Index: ${inputIndex}`);
-            outputData[i] = inputData[inputIndex];
-        }
-
-        const v = new Tensor(outputData, this.dtype);
-        v.shape = targetShape;
-        v.ndim = targetShape.length;
-        return v;
-    }
-
-
 }
