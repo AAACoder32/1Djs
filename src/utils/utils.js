@@ -230,8 +230,8 @@ function fromTypedArrayToArray(data) {
  * @param {other} other 
  * @returns true if array or tensor otherwise false
  */
-function isArrayOrTensor(other) {
-    if (Array.isArray(other) || (other instanceof Tensor)) {
+function isArrayOrNDArray(other) {
+    if (Array.isArray(other) || (other instanceof NDArray)) {
         return true
     }
     return false
@@ -275,11 +275,11 @@ function calcStrides(arr) {
 
 /**
  * 
- * @param {Array} NDArray 
+ * @param {Array} ndArray 
  * @param {Array} shape 
  * @returns 2d array of matrices
  */
-function getMatricesFromNDArray(NDArray, shape) {
+function getMatricesFromNDArray(ndArray, shape) {
     const matrices = []
     const newShape = shape.slice(0, shape.length - 2)
     const strides = calcStrides(shape)
@@ -295,7 +295,7 @@ function getMatricesFromNDArray(NDArray, shape) {
         const mulStrideIdx = []
         newStrides.forEach((value, i) => mulStrideIdx.push(value * index[i]))
         const startIdx = mulStrideIdx.reduce((acc, cur) => acc + cur, 0)
-        matrices.push(NDArray.slice(startIdx, startIdx + newStrides[newStrides.length - 1]))
+        matrices.push(ndArray.slice(startIdx, startIdx + newStrides[newStrides.length - 1]))
     }
 
     return matrices
