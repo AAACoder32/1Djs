@@ -72,6 +72,34 @@ function broadcastShapes(shape1, shape2) {
     return resultShape.reverse();
 }
 
+/**
+ * Validate target shape broadcast target shape
+ * @param {Array} oriShape 
+ * @param {Array} targetShape 
+ */
+
+function validateBroadcastTargetShape(oriShape, targetShape) {
+    if (oriShape.length > targetShape.length) {
+        throw new Error("ndim of target shape is less than original shape ndim")
+    }
+
+    if (oriShape.length < targetShape.length) {
+        const extraDims = targetShape.length - oriShape.length
+        const subTargetShape = targetShape.slice(extraDims)
+        oriShape.forEach((v, i)=>{
+            if(v !== subTargetShape[i] && v !==1){
+                throw new Error("Invalid target shape")
+            }
+        })
+    }else{
+        oriShape.forEach((v, i)=>{
+            if(v !== targetShape[i] && v !==1){
+                throw new Error("Invalid target shape")
+            }
+        })
+    }
+}
+
 
 /**
  * This methods takes 1d array and fills the array with its element according to its shape
@@ -273,24 +301,6 @@ function getMatricesFromNDArray(NDArray, shape) {
     return matrices
 }
 
-
-function getCoordsFromIndex(index, shape, strides) {
-    const coords = new Array(shape.length);
-    for (let i = shape.length - 1; i >= 0; i--) {
-        coords[i] = Math.floor(index / strides[i]);
-        index %= strides[i];
-    }
-    return coords;
-}
-
-function calculateInputIndex(broadcastedCoords, inputShape, inputStrides) {
-    let inputIndex = 0;
-    for (let i = 0; i < broadcastedCoords.length; i++) {
-        const coord = broadcastedCoords[i] % inputShape[i];
-        inputIndex += coord * inputStrides[i];
-    }
-    return inputIndex;
-}
 
 
 

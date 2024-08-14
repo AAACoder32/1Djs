@@ -16,80 +16,23 @@
 <body>
 
     <script src="./src/utils/utils.js"></script>
-    <script src="./src/core/tensor.js"></script>
+    <script src="./src/core/ndarray.js"></script>
 
     <script>
         // Testing code
-        // transpose
-        // let a = [[[1]],[[2]],[[3]],[[4]],[[5]]]
-        // let x = new Tensor(a)
-        // x.print()
-
-        // let xT = x.transpose([2,0,1])
-        // xT.print()
-
-        // broadcasting
-        // let x =
-        //     [
-        //         [
-        //             [1, 2, 3],
-        //             [4, 5, 6]
-        //         ],
-        //         [
-        //             [7, 8, 9],
-        //             [10, 11, 12]
-        //         ]
-        //     ]
-        // let y = [
-        //     [13, 14, 15],
-        //     [16, 17, 18]
-        // ]
-
-        // const numEa = 6
-        // const a = createIndices(numEa)
-
-        // let t1 = new Tensor(makeMultiDimentional([2,1,3],a))
-
-
-
-        // let t = new Tensor([2])
-        // t.divide(x).print()
-        // console.log(t.eWiseMul(x))
-
-
-        // Contraction testing
-        // const numElements = 240
-        // const shape = [2, 3, 4, 5, 2]
-        // const a = []
-        // for (let i = 1; i < numElements + 1; i++) {
-        //     a.push(i)
-        // }
-        // console.log(a)
-        // const multiDim = makeMultiDimentional(shape, a)
-        // console.log(multiDim)
-        // printArray(a, shape)
-        // let x = new Tensor(multiDim)
-        // x = x.contract(4)
-        // x = x.divScalar(2 )
-        // x.print()
-
         // Matrix multiplication testing
         const numEa = 8
         const numEb = 12
         const a = createIndices(numEa)
         const b = createIndices(numEb)
 
-        let t1 = new Tensor(makeMultiDimentional([2,2,1,2],a))
-        let t2 = new Tensor(makeMultiDimentional([2,1,2,3],b))
+        let t1 = new NDArray(makeMultiDimentional([2,2,1,2],a))
+        let t2 = new NDArray(makeMultiDimentional([2,1,2,3],b))
 
         console.log(t2.shape)
         const t3 = t1.matmul(t2)
 
         // b = makeMultiDimentional([3,5],b)
-        
-        
-
-        
     </script>
 
 </body>
