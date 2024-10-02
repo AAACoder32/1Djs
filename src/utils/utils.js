@@ -300,12 +300,3 @@ function getMatricesFromNDArray(ndArray, shape) {
 
     return matrices
 }
-
-
-
-
-
-
-
-
-

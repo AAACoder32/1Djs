@@ -1,4 +1,4 @@
-console.log("Hello from NDArray.js")
+console.log("Hello from 1Djs")
 class NDArray {
     /**
      * Takes argument as nd array
