@@ -179,7 +179,7 @@ function cartesianProduct(...arrays) {
 /**
  * Takes positive integer
  * @param {x} x 
- * @returns from 0 to n-1 values 1d array
+ * @returns from 0 to n-1 values as 1d array
  */
 function createIndices(x) {
     let indices = []
