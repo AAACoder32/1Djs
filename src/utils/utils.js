@@ -86,14 +86,14 @@ function validateBroadcastTargetShape(oriShape, targetShape) {
     if (oriShape.length < targetShape.length) {
         const extraDims = targetShape.length - oriShape.length
         const subTargetShape = targetShape.slice(extraDims)
-        oriShape.forEach((v, i)=>{
-            if(v !== subTargetShape[i] && v !==1){
+        oriShape.forEach((v, i) => {
+            if (v !== subTargetShape[i] && v !== 1) {
                 throw new Error("Invalid target shape")
             }
         })
-    }else{
-        oriShape.forEach((v, i)=>{
-            if(v !== targetShape[i] && v !==1){
+    } else {
+        oriShape.forEach((v, i) => {
+            if (v !== targetShape[i] && v !== 1) {
                 throw new Error("Invalid target shape")
             }
         })
