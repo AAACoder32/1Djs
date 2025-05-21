@@ -579,7 +579,7 @@ class NDArray {
 
             const ms1 = getMatricesFromNDArray(this.broadcastTo(shapeT1).data, shapeT1)
             const ms2 = getMatricesFromNDArray(other.broadcastTo(shapeT2).data, shapeT2)
-            console.log(ms1, ms2)
+            
             const result = []
             ms1.forEach((value, i) => {
                 result.push(matrixMul(value, ms2[i],
